@@ -35,7 +35,29 @@ async function startServer(){
             }
         })
 
+        app.post("/chat/:threadId", async (req: Request, res: Response) => {
+            const {threadId} = req.params;
+            const {message} = req.body.message;
+            try {
+                const response = await callAgent(client, message, threadId);
+                res.json({response})
+
+            } catch(error){
+                console.error('Error in chat:', error);
+                res.status(500).json({error: 'Failed to continue conversation'});
+            }
+
+        })
+
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}. You better catch it!`);
+        })
+
     } catch (error) {
-        console.error(error);
+        console.error('Error connecting to MongoDB:', error);
+        process.exit(1);
     }
 }
+
+startServer();
