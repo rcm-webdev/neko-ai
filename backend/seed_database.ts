@@ -1,12 +1,11 @@
 //populate database with test data using googles generative artificial intelligence (gemini)
-
 import {ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings} from "@langchain/google-genai";
 import {StructuredOutputParser} from "@langchain/core/output_parsers";
 import {MongoClient} from "mongodb";
 import {MongoDBAtlasVectorSearch} from "@langchain/mongodb";
 //validation and typesafety
 import {z} from "zod";
-import dotenv from "dotenv/config";
+import "dotenv/config";
 
 
 const client = new MongoClient(process.env.MONGO_URI as string);
@@ -48,7 +47,8 @@ const itemSchema = z.object({
 
 type Item = z.infer<typeof itemSchema>;
 
-const parser = StructuredOutputParser.fromZodSchema(z.array(itemSchema));
+// Create parser that ensures AI output matches our item schema
+const parser = StructuredOutputParser.fromZodSchema(z.array(itemSchema))
 
 //create database and collections
 async function setupDatabaseandCollection(): Promise<void> {
